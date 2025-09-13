@@ -3,9 +3,19 @@
 import { useLanguage } from "@/contexts/language-context";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
+  if (!isClient) {
+    return <div className="h-8 w-[76px] rounded-full border border-primary/50 p-1" />;
+  }
 
   return (
     <div className="flex items-center space-x-1 rounded-full border border-primary/50 p-1">
