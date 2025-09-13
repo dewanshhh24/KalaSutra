@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,11 @@ export function PhotoCatalogCard() {
   const [catalog, setCatalog] = useState<PhotoToCatalogOutput | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -75,7 +80,7 @@ export function PhotoCatalogCard() {
               <p className="text-sm text-muted-foreground">Your photo will appear here</p>
             )}
           </div>
-          <Input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} disabled={isLoading} />
+          {isClient && <Input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} disabled={isLoading} />}
           <Button onClick={() => fileInputRef.current?.click()} className="w-full" disabled={isLoading}>
             <CameraIcon className="mr-2 h-5 w-5" />
             {preview ? 'Change Photo' : t('uploadPhoto')}
