@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
@@ -17,6 +17,11 @@ export function VoiceProfileCard() {
   const [profile, setProfile] = useState<VoiceToProfileOutput | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleStartRecording = async () => {
     try {
@@ -116,23 +121,25 @@ export function VoiceProfileCard() {
             <Button onClick={() => setProfile(null)} variant="outline">{t('recordAgain')}</Button>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-4 text-center">
-              <Button 
-                  onClick={toggleRecording} 
-                  size="icon"
-                  className={cn(
-                      "h-24 w-24 rounded-full shadow-lg transition-all duration-300 focus-visible:ring-4",
-                      isRecording 
-                          ? "bg-destructive text-destructive-foreground animate-pulse"
-                          : "bg-primary text-primary-foreground"
-                  )}
-                  disabled={isLoading}
-              >
-                  {isRecording ? <StopCircle className="h-10 w-10" /> : <Mic className="h-10 w-10" />}
-                  <span className="sr-only">{isRecording ? t('stop') : t('record')}</span>
-              </Button>
-              <p className="text-muted-foreground">{isRecording ? t('recording') : t('clickToStart')}</p>
-          </div>
+          isClient && (
+            <div className="flex flex-col items-center gap-4 text-center">
+                <Button 
+                    onClick={toggleRecording} 
+                    size="icon"
+                    className={cn(
+                        "h-24 w-24 rounded-full shadow-lg transition-all duration-300 focus-visible:ring-4",
+                        isRecording 
+                            ? "bg-destructive text-destructive-foreground animate-pulse"
+                            : "bg-primary text-primary-foreground"
+                    )}
+                    disabled={isLoading}
+                >
+                    {isRecording ? <StopCircle className="h-10 w-10" /> : <Mic className="h-10 w-10" />}
+                    <span className="sr-only">{isRecording ? t('stop') : t('record')}</span>
+                </Button>
+                <p className="text-muted-foreground">{isRecording ? t('recording') : t('clickToStart')}</p>
+            </div>
+          )
         )}
       </CardContent>
     </Card>
