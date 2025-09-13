@@ -80,11 +80,15 @@ export function PhotoCatalogCard() {
               <p className="text-sm text-muted-foreground">Your photo will appear here</p>
             )}
           </div>
-          {isClient && <Input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} disabled={isLoading} />}
-          <Button onClick={() => fileInputRef.current?.click()} className="w-full" disabled={isLoading}>
-            <CameraIcon className="mr-2 h-5 w-5" />
-            {preview ? 'Change Photo' : t('uploadPhoto')}
-          </Button>
+          {isClient && (
+            <>
+              <Input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} disabled={isLoading} />
+              <Button onClick={() => fileInputRef.current?.click()} className="w-full" disabled={isLoading}>
+                <CameraIcon className="mr-2 h-5 w-5" />
+                {preview ? 'Change Photo' : t('uploadPhoto')}
+              </Button>
+            </>
+          )}
           {catalog && !isLoading && (
             <div className="w-full space-y-4 text-sm">
               <div>
