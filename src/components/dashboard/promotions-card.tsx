@@ -105,14 +105,16 @@ export function PromotionsCard() {
               </div>
             </RadioGroup>
           </div>
-          <div>
-            <Label>Product Photo</Label>
-            {isClient && <Input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} disabled={isLoading} />}
-            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full" disabled={isLoading}>
-              <CameraIcon className="mr-2 h-4 w-4" />
-              {preview ? 'Change Photo' : t('uploadPhoto')}
-            </Button>
-          </div>
+          {isClient && (
+            <div>
+              <Label>Product Photo</Label>
+              <Input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} disabled={isLoading} />
+              <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full" disabled={isLoading}>
+                <CameraIcon className="mr-2 h-4 w-4" />
+                {preview ? 'Change Photo' : t('uploadPhoto')}
+              </Button>
+            </div>
+          )}
         </div>
         
         <Button onClick={handleGeneratePoster} className="w-full" disabled={isLoading || !preview}>
