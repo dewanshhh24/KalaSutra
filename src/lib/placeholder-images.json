@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "artisan-profile-1",
+      "description": "A portrait of an artisan.",
+      "imageUrl": "https://picsum.photos/seed/kalasutra1/400/400",
+      "imageHint": "artisan portrait"
+    }
+  ]
 }
