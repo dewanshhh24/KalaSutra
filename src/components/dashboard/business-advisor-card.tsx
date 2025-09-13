@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
@@ -32,6 +32,12 @@ export function BusinessAdvisorCard() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [insights, setInsights] = useState<BusinessInsightsOutput | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const handleGetInsights = async () => {
     setIsLoading(true);
@@ -116,12 +122,14 @@ export function BusinessAdvisorCard() {
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-center pt-8">
-            <Button onClick={handleGetInsights} disabled={isLoading}>
-              <Lightbulb className="mr-2 h-5 w-5" />
-              {t('getInsights')}
-            </Button>
-          </div>
+          isClient && (
+            <div className="flex items-center justify-center pt-8">
+              <Button onClick={handleGetInsights} disabled={isLoading}>
+                <Lightbulb className="mr-2 h-5 w-5" />
+                {t('getInsights')}
+              </Button>
+            </div>
+          )
         )}
       </CardContent>
     </Card>
