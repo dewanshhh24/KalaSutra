@@ -5,7 +5,7 @@
  *
  * - photoToCatalog - A function that handles the image analysis and content generation process.
  * - PhotoToCatalogInput - The input type for the photoToCatalog function.
- * - PhotoToCatalogOutput - The return type for the photoToCatalog function.
+ * - PhotoToCatalogOutput - The return type for the photoToCata_log function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -52,7 +52,19 @@ const photoToCatalogFlow = ai.defineFlow(
     outputSchema: PhotoToCatalogOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const {output} = await ai.generate({
+        model: 'googleai/gemini-pro-vision',
+        prompt: `You are an AI assistant that helps artisans create product listings.
+    
+      Analyze the provided product photo and suggest relevant attributes, a reasonable price range, and engaging captions in both English and Hindi.
+      The artisan will use these suggestions to quickly list their items for sale.
+    
+      Analyze the image in the following data URI: ${input.photoDataUri}.
+    `,
+        output: {
+            schema: PhotoToCatalogOutputSchema,
+        }
+    });
     return output!;
   }
 );
