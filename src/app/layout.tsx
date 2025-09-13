@@ -4,7 +4,7 @@ import { LanguageProvider } from '@/contexts/language-context';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'CraftAIka',
+  title: 'KalaSutra',
   description: 'Empowering Artisans, Weaving Stories.',
   manifest: '/manifest.json',
 };

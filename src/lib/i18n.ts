@@ -1,6 +1,6 @@
 export const translations = {
   en: {
-    appName: "CraftAIka",
+    appName: "KalaSutra",
     tagline: "Empowering Artisans, Weaving Stories.",
     voiceToProfileTitle: "Create Profile from Voice",
     voiceToProfileDescription: "Record a voice note describing yourself, your craft, region, and experience. Our AI will create your profile.",
@@ -51,7 +51,7 @@ export const translations = {
     buyOnWhatsApp: "Buy on WhatsApp",
   },
   hi: {
-    appName: "क्राफ्ट AIKA",
+    appName: "कलासूत्र",
     tagline: "कारीगरों को सशक्त बनाना, कहानियाँ बुनना।",
     voiceToProfileTitle: "आवाज़ से प्रोफ़ाइल बनाएं",
     voiceToProfileDescription: "एक वॉयस नोट रिकॉर्ड करें जिसमें आप, आपका शिल्प, क्षेत्र और अनुभव का वर्णन हो। हमारा AI आपकी प्रोफ़ाइल बना देगा।",
