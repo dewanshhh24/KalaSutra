@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,11 @@ export function PromotionsCard() {
   const [preview, setPreview] = useState<string | null>(null);
   const [style, setStyle] = useState<"traditional" | "modern">("modern");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -102,7 +107,7 @@ export function PromotionsCard() {
           </div>
           <div>
             <Label>Product Photo</Label>
-            <Input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} disabled={isLoading} />
+            {isClient && <Input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} disabled={isLoading} />}
             <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full" disabled={isLoading}>
               <CameraIcon className="mr-2 h-4 w-4" />
               {preview ? 'Change Photo' : t('uploadPhoto')}
