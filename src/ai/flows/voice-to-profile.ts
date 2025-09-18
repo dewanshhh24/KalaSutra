@@ -15,16 +15,16 @@ const VoiceToProfileInputSchema = z.object({
   audioDataUri: z
     .string()
     .describe(
-      'An audio recording of the artisan describing their craft, as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.' // Corrected description
+      "An audio recording of the artisan describing their craft, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'." // Corrected description
     ),
 });
 export type VoiceToProfileInput = z.infer<typeof VoiceToProfileInputSchema>;
 
 const VoiceToProfileOutputSchema = z.object({
-  name: z.string().describe('The name of the artisan.'),
-  craft: z.string().describe('The artisan\'s craft or specialty.'),
-  region: z.string().describe('The region or location where the artisan is based.'),
-  experience: z.string().describe('The artisan\'s years of experience or a description of their expertise.'),
+  name: z.string().describe("The name of the artisan."),
+  craft: z.string().describe("The artisan's craft or specialty."),
+  region: z.string().describe("The region or location where the artisan is based."),
+  experience: z.string().describe("The artisan's years of experience or a description of their expertise."),
 });
 export type VoiceToProfileOutput = z.infer<typeof VoiceToProfileOutputSchema>;
 
