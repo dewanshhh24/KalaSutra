@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Tag, CircleDollarSign, Captions, Edit, Save, XCircle, X, PlusCircle, MessageSquareText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { MarketingEngineCard } from "./marketing-engine-card";
 import { Textarea } from "../ui/textarea";
 import { Label } from "../ui/label";
@@ -233,6 +233,15 @@ export function PhotoCatalogCard() {
                   {catalog.captions.map((cap, i) => <li key={i}>{cap}</li>)}
                 </ul>
               </div>
+               <div>
+                <h4 className="mb-2 flex items-center gap-2 font-headline text-base font-medium">
+                  <Captions className="h-4 w-4 text-primary" />
+                  {t('captions')} (Hindi)
+                </h4>
+                <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+                  {catalog.hindiCaptions.map((cap, i) => <li key={i}>{cap}</li>)}
+                </ul>
+              </div>
               {isEditing && (
                 <div className="flex justify-end gap-2">
                     <Button onClick={handleSave} size="sm"><Save className="mr-2 h-4 w-4" /> Save</Button>
@@ -254,6 +263,9 @@ export function PhotoCatalogCard() {
         )}
       </Card>
       <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
+        <DialogHeader>
+            <DialogTitle>{t('marketingContentTitle')}</DialogTitle>
+        </DialogHeader>
         <MarketingEngineCard
           productName={catalog?.attributes.slice(0, 3).join(', ') || 'Handmade Product'}
           productDescription={catalog?.captions[0] || 'A beautiful handmade product.'}

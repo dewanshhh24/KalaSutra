@@ -65,11 +65,7 @@ export function MarketingEngineCard({
 
   return (
     <Card className="border-0 shadow-none">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-            <BotMessageSquare className="h-6 w-6 text-primary" />
-            {t('marketingContentTitle')}
-        </CardTitle>
+      <CardHeader className="p-0">
         <CardDescription>{t('promotionsDescription')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
