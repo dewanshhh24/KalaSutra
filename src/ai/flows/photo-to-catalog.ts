@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview AI flow for generating product attributes, price range, and captions from a product photo.
+ * @fileOverview AI flow for generating product attributes, price range, and captions from a product photo and description.
  *
  * - photoToCatalog - A function that handles the image analysis and content generation process.
  * - PhotoToCatalogInput - The input type for the photoToCatalog function.
@@ -15,8 +15,9 @@ const PhotoToCatalogInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
-      'A photo of the product, as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.' // Corrected typo here
+      'A photo of the product, as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.'
     ),
+  description: z.string().optional().describe('An optional description of the product.'),
 });
 export type PhotoToCatalogInput = z.infer<typeof PhotoToCatalogInputSchema>;
 
@@ -43,10 +44,11 @@ const photoToCatalogFlow = ai.defineFlow(
         model: 'googleai/gemini-1.5-flash-latest',
         prompt: `You are an AI assistant that helps artisans create product listings.
     
-      Analyze the provided product photo and suggest relevant attributes, a reasonable price range in Indian Rupees (INR), and engaging captions in both English and Hindi.
+      Analyze the provided product photo and the description (if available) to suggest relevant attributes, a reasonable price range in Indian Rupees (INR), and engaging captions in both English and Hindi.
       The artisan will use these suggestions to quickly list their items for sale.
     
       Analyze this image: ${input.photoDataUri}.
+      ${input.description ? `Use this description as well: ${input.description}` : ''}
     `,
         output: {
             schema: PhotoToCatalogOutputSchema,

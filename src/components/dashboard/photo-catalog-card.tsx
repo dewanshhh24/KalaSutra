@@ -9,10 +9,12 @@ import { useLanguage } from "@/contexts/language-context";
 import { photoToCatalog, PhotoToCatalogOutput } from "@/ai/flows/photo-to-catalog";
 import Image from 'next/image';
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Tag, CircleDollarSign, Captions, Edit, Save, XCircle, X, PlusCircle } from "lucide-react";
+import { Loader2, Tag, CircleDollarSign, Captions, Edit, Save, XCircle, X, PlusCircle, MessageSquareText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { MarketingEngineCard } from "./marketing-engine-card";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
 
 
 export function PhotoCatalogCard() {
@@ -21,6 +23,7 @@ export function PhotoCatalogCard() {
   const [isLoading, setIsLoading] = useState(false);
   const [catalog, setCatalog] = useState<PhotoToCatalogOutput | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [description, setDescription] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isClient, setIsClient] = useState(false);
 
@@ -35,32 +38,46 @@ export function PhotoCatalogCard() {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setIsLoading(true);
       setCatalog(null);
       setIsEditing(false);
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = async () => {
-        const base64Photo = reader.result as string;
-        setPreview(base64Photo);
-        try {
-          const result = await photoToCatalog({ photoDataUri: base64Photo });
-          setCatalog(result);
-          setEditedCatalog(result);
-        } catch (error) {
-          console.error("Error generating catalog:", error);
-          toast({
-            variant: "destructive",
-            title: "AI Error",
-            description: "Failed to generate catalog from photo.",
-          });
-        } finally {
-          setIsLoading(false);
-        }
-      };
+      setPreview(URL.createObjectURL(file));
+      await generateCatalog(file);
     }
   };
+
+  const generateCatalog = async (file: File) => {
+    setIsLoading(true);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
+      const base64Photo = reader.result as string;
+      try {
+        const result = await photoToCatalog({ photoDataUri: base64Photo, description });
+        setCatalog(result);
+        setEditedCatalog(result);
+      } catch (error) {
+        console.error("Error generating catalog:", error);
+        toast({
+          variant: "destructive",
+          title: "AI Error",
+          description: "Failed to generate catalog from photo.",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  };
+
+  const handleRegenerate = async () => {
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      await generateCatalog(file);
+      toast({
+        title: "Captions Regenerated",
+        description: "New captions have been generated based on your description.",
+      });
+    }
+  }
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -139,6 +156,23 @@ export function PhotoCatalogCard() {
               </Button>
             </>
           )}
+
+          {preview && (
+            <div className="w-full space-y-2">
+              <Label htmlFor="description" className="flex items-center gap-2"><MessageSquareText className="h-4 w-4" /> Add a description (optional)</Label>
+              <Textarea
+                id="description"
+                placeholder="E.g., Hand-woven silk scarf with traditional motifs..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+              />
+              <Button onClick={handleRegenerate} variant="outline" size="sm" className="w-full" disabled={isLoading}>
+                {catalog ? "Regenerate Captions" : "Generate Catalog"}
+              </Button>
+            </div>
+          )}
+
           {catalog && !isLoading && (
             <div className="w-full space-y-4 text-sm">
                 {!isEditing && (
