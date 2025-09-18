@@ -28,6 +28,7 @@ const prompt = ai.definePrompt({
   name: 'voiceToProfilePrompt',
   input: {schema: VoiceToProfileInputSchema},
   output: {schema: VoiceToProfileOutputSchema},
+  model: 'googleai/gemini-1.5-flash-latest',
   prompt: `You are an AI assistant that extracts profile information from an artisan's voice recording.
 
 Listen to the audio and extract the following information:
