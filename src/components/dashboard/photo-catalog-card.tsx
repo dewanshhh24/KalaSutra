@@ -9,7 +9,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { photoToCatalog, PhotoToCatalogOutput } from "@/ai/flows/photo-to-catalog";
 import Image from 'next/image';
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Tag, CircleDollarSign, Captions, Edit, Save, XCircle, X } from "lucide-react";
+import { Loader2, Tag, CircleDollarSign, Captions, Edit, Save, XCircle, X, PlusCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { MarketingEngineCard } from "./marketing-engine-card";
@@ -26,6 +26,7 @@ export function PhotoCatalogCard() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedCatalog, setEditedCatalog] = useState<PhotoToCatalogOutput | null>(null);
+  const [newAttribute, setNewAttribute] = useState("");
 
   useEffect(() => {
     setIsClient(true);
@@ -94,6 +95,16 @@ export function PhotoCatalogCard() {
     }
   };
 
+  const handleAddAttribute = () => {
+    if (newAttribute.trim() && editedCatalog) {
+      setEditedCatalog({
+        ...editedCatalog,
+        attributes: [...editedCatalog.attributes, newAttribute.trim()],
+      });
+      setNewAttribute("");
+    }
+  };
+
 
   return (
     <Dialog>
@@ -154,6 +165,19 @@ export function PhotoCatalogCard() {
                     </Badge>
                   ))}
                 </div>
+                {isEditing && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <Input
+                      value={newAttribute}
+                      onChange={(e) => setNewAttribute(e.target.value)}
+                      placeholder="Add an attribute"
+                      className="h-8"
+                    />
+                    <Button onClick={handleAddAttribute} size="sm" variant="outline">
+                      <PlusCircle className="mr-2 h-4 w-4" /> Add
+                    </Button>
+                  </div>
+                )}
               </div>
               <div>
                 <h4 className="mb-2 flex items-center gap-2 font-headline text-base font-medium">
