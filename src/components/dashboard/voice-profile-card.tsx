@@ -5,9 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/language-context";
 import { voiceToProfile, VoiceToProfileOutput } from "@/ai/flows/voice-to-profile";
-import { Loader2, UserCircle, Mic, StopCircle } from "lucide-react";
+import { Loader2, UserCircle, Mic, StopCircle, Edit, Save, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function VoiceProfileCard() {
   const { t } = useLanguage();
@@ -15,6 +17,9 @@ export function VoiceProfileCard() {
   const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState<VoiceToProfileOutput | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedProfile, setEditedProfile] = useState<VoiceToProfileOutput | null>(null);
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const [isClient, setIsClient] = useState(false);
@@ -85,6 +90,34 @@ export function VoiceProfileCard() {
     }
   };
 
+  const handleEdit = () => {
+    setEditedProfile(profile);
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedProfile(null);
+  };
+
+  const handleSave = () => {
+    setProfile(editedProfile);
+    setIsEditing(false);
+    toast({
+      title: "Profile Updated",
+      description: "Your profile has been saved successfully.",
+    });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (editedProfile) {
+      setEditedProfile({
+        ...editedProfile,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
   return (
     <Card className="flex h-full flex-col">
       <CardHeader>
@@ -107,18 +140,49 @@ export function VoiceProfileCard() {
                 <UserCircle className="h-5 w-5 text-primary" />
                 {t('profile')}
               </h3>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-left sm:grid-cols-[max-content_1fr]">
-                <strong className="text-muted-foreground">{t('name')}:</strong>
-                <span>{profile.name}</span>
-                <strong className="text-muted-foreground">{t('craft')}:</strong>
-                <span>{profile.craft}</span>
-                <strong className="text-muted-foreground">{t('region')}:</strong>
-                <span>{profile.region}</span>
-                <strong className="text-muted-foreground">{t('experience')}:</strong>
-                <span>{profile.experience}</span>
-              </div>
+              {isEditing && editedProfile ? (
+                 <div className="space-y-4 text-left">
+                    <div>
+                        <Label htmlFor="name" className="text-muted-foreground">{t('name')}</Label>
+                        <Input id="name" name="name" value={editedProfile.name} onChange={handleInputChange} />
+                    </div>
+                    <div>
+                        <Label htmlFor="craft" className="text-muted-foreground">{t('craft')}</Label>
+                        <Input id="craft" name="craft" value={editedProfile.craft} onChange={handleInputChange} />
+                    </div>
+                    <div>
+                        <Label htmlFor="region" className="text-muted-foreground">{t('region')}</Label>
+                        <Input id="region" name="region" value={editedProfile.region} onChange={handleInputChange} />
+                    </div>
+                    <div>
+                        <Label htmlFor="experience" className="text-muted-foreground">{t('experience')}</Label>
+                        <Input id="experience" name="experience" value={editedProfile.experience} onChange={handleInputChange} />
+                    </div>
+                 </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-left sm:grid-cols-[max-content_1fr]">
+                  <strong className="text-muted-foreground">{t('name')}:</strong>
+                  <span>{profile.name}</span>
+                  <strong className="text-muted-foreground">{t('craft')}:</strong>
+                  <span>{profile.craft}</span>
+                  <strong className="text-muted-foreground">{t('region')}:</strong>
+                  <span>{profile.region}</span>
+                  <strong className="text-muted-foreground">{t('experience')}:</strong>
+                  <span>{profile.experience}</span>
+                </div>
+              )}
             </div>
-            <Button onClick={() => setProfile(null)} variant="outline">{t('recordAgain')}</Button>
+            {isEditing ? (
+                 <div className="flex justify-center gap-2">
+                    <Button onClick={handleSave} size="sm"><Save className="mr-2 h-4 w-4" /> Save</Button>
+                    <Button onClick={handleCancelEdit} variant="ghost" size="sm"><XCircle className="mr-2 h-4 w-4" /> Cancel</Button>
+                 </div>
+            ) : (
+                <div className="flex justify-center gap-2">
+                    <Button onClick={() => { setProfile(null); setIsEditing(false); }} variant="outline">{t('recordAgain')}</Button>
+                    <Button onClick={handleEdit}><Edit className="mr-2 h-4 w-4" /> Edit</Button>
+                </div>
+            )}
           </div>
         ) : (
           isClient && (
