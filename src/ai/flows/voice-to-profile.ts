@@ -10,7 +10,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import wav from 'wav';
 
 const VoiceToProfileInputSchema = z.object({
   audioDataUri: z
@@ -58,21 +57,7 @@ const voiceToProfileFlow = ai.defineFlow(
     outputSchema: VoiceToProfileOutputSchema,
   },
   async input => {
-    const {output} = await ai.generate({
-      model: 'googleai/gemini-pro-vision',
-      prompt: `You are an AI assistant that extracts profile information from an artisan's voice recording.
-  Listen to the audio and extract the following information:
-  - Artisan's Name
-  - Craft (e.g., pottery, weaving, painting)
-  - Region (where they are located)
-  - Experience (years of experience or a description of their expertise)
-  
-  Audio: ${input.audioDataUri}
-  Return the information in a structured format.`,
-      output: {
-        schema: VoiceToProfileOutputSchema,
-      },
-    });
+    const {output} = await prompt(input);
     return output!;
   }
 );
