@@ -44,15 +44,19 @@ const generateMarketingContentPrompt = ai.definePrompt({
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateMarketingContentInputSchema},
   output: {schema: GenerateMarketingContentOutputSchema},
-  prompt: `You are an AI marketing assistant helping artisans promote their products.
+  prompt: [
+    {text: `You are an AI marketing assistant helping artisans promote their products.
 
-  The artisan's name is {{artisanName}}, their craft is {{artisanCraft}}, and they are from {{artisanRegion}}.
-  The product is named {{productName}}, and here is a detailed description: {{productDescription}}.
+The artisan's name is {{artisanName}}, their craft is {{artisanCraft}}, and they are from {{artisanRegion}}.
+The product is named {{productName}}, and here is a detailed description: {{productDescription}}.
 
-  Here is a photo of the product: {{media url=productPhotoDataUri}}
-
-  Generate a social media post, a WhatsApp message, and a blog post draft to promote the product. Focus on the unique aspects of the product and the artisan's story.
-  `,
+Here is a photo of the product:
+`},
+    {media: {url: '{{productPhotoDataUri}}' }},
+    {text: `
+Generate a social media post, a WhatsApp message, and a blog post draft to promote the product. Focus on the unique aspects of the product and the artisan's story.
+`}
+  ],
 });
 
 const generateMarketingContentFlow = ai.defineFlow(
