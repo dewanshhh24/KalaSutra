@@ -36,10 +36,10 @@ const prompt = ai.definePrompt({
   name: 'voiceToProfilePrompt',
   input: {schema: VoiceToProfileInputSchema},
   output: {schema: VoiceToProfileOutputSchema},
-  prompt: `You are an AI assistant that extracts profile information from an artisan\'s voice recording.
+  prompt: `You are an AI assistant that extracts profile information from an artisan's voice recording.
 
   Listen to the audio and extract the following information:
-  - Artisan\'s Name
+  - Artisan's Name
   - Craft (e.g., pottery, weaving, painting)
   - Region (where they are located)
   - Experience (years of experience or a description of their expertise)
@@ -57,7 +57,23 @@ const voiceToProfileFlow = ai.defineFlow(
     outputSchema: VoiceToProfileOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const {output} = await ai.generate({
+      model: 'googleai/gemini-pro',
+      prompt: `You are an AI assistant that extracts profile information from an artisan's voice recording.
+  Listen to the audio and extract the following information:
+  - Artisan's Name
+  - Craft (e.g., pottery, weaving, painting)
+  - Region (where they are located)
+  - Experience (years of experience or a description of their expertise)
+  
+  Audio: ${input.audioDataUri}
+  
+  Return the information in a structured format.
+  `,
+      output: {
+        schema: VoiceToProfileOutputSchema,
+      },
+    });
     return output!;
   }
 );
