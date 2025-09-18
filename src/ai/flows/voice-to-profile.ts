@@ -1,21 +1,13 @@
 'use server';
 
-/**
- * @fileOverview An AI agent that transcribes a voice note into a structured artisan profile.
- *
- * - voiceToProfile - A function that handles the voice note transcription and profile creation process.
- * - VoiceToProfileInput - The input type for the voiceToPcd rofile function.
- * - VoiceToProfileOutput - The return type for the voiceToProfile function.
- */
-
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const VoiceToProfileInputSchema = z.object({
   audioDataUri: z
     .string()
     .describe(
-      "An audio recording of the artisan describing their craft, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'." // Corrected description
+      "An audio recording of the artisan describing their craft, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
 });
 export type VoiceToProfileInput = z.infer<typeof VoiceToProfileInputSchema>;
@@ -38,16 +30,15 @@ const prompt = ai.definePrompt({
   output: {schema: VoiceToProfileOutputSchema},
   prompt: `You are an AI assistant that extracts profile information from an artisan's voice recording.
 
-  Listen to the audio and extract the following information:
-  - Artisan's Name
-  - Craft (e.g., pottery, weaving, painting)
-  - Region (where they are located)
-  - Experience (years of experience or a description of their expertise)
+Listen to the audio and extract the following information:
+- Artisan's Name
+- Craft (e.g., pottery, weaving, painting)
+- Region
+- Experience (years of experience or description)
 
-  Audio: {{media url=audioDataUri}}
+Return the information in a structured format.
 
-  Return the information in a structured format.
-  `,
+Audio input: {{media url=audioDataUri}}`,
 });
 
 const voiceToProfileFlow = ai.defineFlow(
@@ -57,23 +48,7 @@ const voiceToProfileFlow = ai.defineFlow(
     outputSchema: VoiceToProfileOutputSchema,
   },
   async input => {
-    const {output} = await ai.generate({
-      model: 'googleai/gemini-1.5-flash',
-      prompt: `You are an AI assistant that extracts profile information from an artisan's voice recording.
-  Listen to the audio and extract the following information:
-  - Artisan's Name
-  - Craft (e.g., pottery, weaving, painting)
-  - Region (where they are located)
-  - Experience (years of experience or a description of their expertise)
-
-  Audio: ${input.audioDataUri}
-
-  Return the information in a structured format.
-  `,
-      output: {
-        schema: VoiceToProfileOutputSchema,
-      },
-    });
+    const {output} = await prompt(input);
     return output!;
   }
 );
