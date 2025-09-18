@@ -4,7 +4,7 @@
  * @fileOverview An AI agent that transcribes a voice note into a structured artisan profile.
  *
  * - voiceToProfile - A function that handles the voice note transcription and profile creation process.
- * - VoiceToProfileInput - The input type for the voiceToProfile function.
+ * - VoiceToProfileInput - The input type for the voiceToPcd rofile function.
  * - VoiceToProfileOutput - The return type for the voiceToProfile function.
  */
 
@@ -57,7 +57,23 @@ const voiceToProfileFlow = ai.defineFlow(
     outputSchema: VoiceToProfileOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const {output} = await ai.generate({
+      model: 'googleai/gemini-1.5-flash',
+      prompt: `You are an AI assistant that extracts profile information from an artisan's voice recording.
+  Listen to the audio and extract the following information:
+  - Artisan's Name
+  - Craft (e.g., pottery, weaving, painting)
+  - Region (where they are located)
+  - Experience (years of experience or a description of their expertise)
+
+  Audio: ${input.audioDataUri}
+
+  Return the information in a structured format.
+  `,
+      output: {
+        schema: VoiceToProfileOutputSchema,
+      },
+    });
     return output!;
   }
 );
