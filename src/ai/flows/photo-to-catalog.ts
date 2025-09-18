@@ -53,13 +53,13 @@ const photoToCatalogFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await ai.generate({
-        model: 'googleai/gemini-pro-vision',
+        model: 'googleai/gemini-1.5-flash-latest',
         prompt: `You are an AI assistant that helps artisans create product listings.
     
       Analyze the provided product photo and suggest relevant attributes, a reasonable price range, and engaging captions in both English and Hindi.
       The artisan will use these suggestions to quickly list their items for sale.
     
-      Analyze the image in the following data URI: ${input.photoDataUri}.
+      Analyze this image: ${input.photoDataUri}.
     `,
         output: {
             schema: PhotoToCatalogOutputSchema,

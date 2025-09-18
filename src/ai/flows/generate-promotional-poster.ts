@@ -33,23 +33,6 @@ export async function generatePromotionalPoster(input: GeneratePromotionalPoster
   return generatePromotionalPosterFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'generatePromotionalPosterPrompt',
-  input: {schema: GeneratePromotionalPosterInputSchema},
-  output: {schema: GeneratePromotionalPosterOutputSchema},
-  prompt: `You are an expert graphic designer specializing in creating promotional posters.
-
-You will use the provided product photo and style to generate a promotional poster.
-
-Product Photo: {{media url=photoDataUri}}
-Style: {{{style}}}
-
-Generate a promotional poster in the specified style. The poster should be visually appealing and suitable for use on social media and other marketing channels.
-
-Ensure the generated image is high quality.
-`,
-});
-
 const generatePromotionalPosterFlow = ai.defineFlow(
   {
     name: 'generatePromotionalPosterFlow',
@@ -59,15 +42,13 @@ const generatePromotionalPosterFlow = ai.defineFlow(
   async input => {
     const {media} = await ai.generate({
       model: 'googleai/imagen-4.0-fast-generate-001',
-      prompt: [
-        {media: {url: input.photoDataUri}},
-        {text: `generate a {{{style}}} promotional poster of this product`},
-      ],
-      config: {
-        responseModalities: ['IMAGE'],
-      },
+      prompt: `generate a ${input.style} promotional poster of this product: ${input.photoDataUri}`
     });
 
-    return {posterDataUri: media!.url!};
+    if (!media.url) {
+      throw new Error('Image generation failed');
+    }
+
+    return {posterDataUri: media.url};
   }
 );
