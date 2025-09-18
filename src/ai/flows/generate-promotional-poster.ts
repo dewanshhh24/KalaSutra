@@ -41,8 +41,14 @@ const generatePromotionalPosterFlow = ai.defineFlow(
   },
   async input => {
     const {media} = await ai.generate({
-      model: 'googleai/imagen-4.0-fast-generate-001',
-      prompt: `generate a ${input.style} promotional poster of this product: ${input.photoDataUri}`
+      model: 'googleai/gemini-1.5-flash-latest',
+      prompt: [
+        {text: `Generate a ${input.style} promotional poster for the product in the image.`},
+        {media: {url: input.photoDataUri}},
+      ],
+      config: {
+          responseModalities: ['IMAGE'],
+      },
     });
 
     if (!media.url) {
