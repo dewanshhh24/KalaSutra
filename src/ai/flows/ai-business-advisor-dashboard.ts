@@ -49,6 +49,7 @@ export async function getBusinessInsights(input: BusinessInsightsInput): Promise
 
 const prompt = ai.definePrompt({
   name: 'businessInsightsPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: BusinessInsightsInputSchema},
   output: {schema: BusinessInsightsOutputSchema},
   tools: [getMarketTrends],
